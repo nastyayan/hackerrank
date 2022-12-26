@@ -1,0 +1,10 @@
+Link:
+https://www.hackerrank.com/challenges/binary-search-tree-1/submissions/code/306758476
+
+Solution:
+select N, case when N in (select P from BST) and P is not null then 'Inner'
+            when N in (select P from BST) and P is null then 'Root'
+            else 'Leaf'
+            end as Name
+from BST
+order by N
