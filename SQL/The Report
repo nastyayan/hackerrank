@@ -1,0 +1,23 @@
+Link:
+https://www.hackerrank.com/challenges/the-report/problem
+
+Solution:
+with cte as (
+select *
+from grades
+)
+select *
+from (
+select name, (select grade from cte where marks between min_mark and max_mark) as grade, marks
+from students
+order by grade desc, name
+) a
+where grade>7
+union all
+select *
+from (
+select 'NULL', (select grade from cte where marks between min_mark and max_mark) as grade, marks
+from students
+order by grade desc, marks, name
+) b
+where grade<8
