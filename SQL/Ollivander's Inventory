@@ -1,0 +1,20 @@
+Link:
+https://www.hackerrank.com/challenges/harry-potter-and-wands/problem
+
+IT IS BETTER TO USE DENSE_RANK() AND THEN FILTER BY RANK=1 BUT MY SOLUTION WITH IT HAD NOT BEEN ACCEPTED, SO HERE IS THE HARD WAY:
+
+Solution:
+select w.id, t1.age, t1.mi, t1.ma
+from (
+select code, age, min(coins_needed) mi, ma
+from (
+select w.code, wp.age, w.coins_needed, max(w.power) as ma
+from wands w
+join wands_property wp using(code)
+where is_evil=0
+group by code, age, coins_needed
+) t
+group by code, age, ma
+) t1
+join wands w on t1.code=w.code and t1.ma = w.power and t1.mi=w.coins_needed
+order by ma desc, age desc
