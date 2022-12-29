@@ -1,0 +1,38 @@
+Link:
+https://www.hackerrank.com/challenges/challenges/problem
+
+Solution:
+
+with cte as(
+select max(c)
+from (
+select h.hacker_id, h.name, count(challenge_id) as c
+from hackers h
+join challenges c using(hacker_id)
+group by hacker_id, name
+) tab
+)
+
+select *
+from (
+select h.hacker_id, h.name, count(challenge_id) as c
+from hackers h
+join challenges c using(hacker_id)
+group by hacker_id, name
+) t3
+where c in (
+select c
+from (
+select c, count(c) as b
+from (
+select h.hacker_id, h.name, count(challenge_id) as c
+from hackers h
+join challenges c using(hacker_id)
+group by hacker_id, name
+order by c desc, hacker_id
+) t
+group by c
+having c = (select * from cte) or b=1
+) t1
+)
+order by c desc, hacker_id
