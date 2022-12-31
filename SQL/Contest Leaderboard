@@ -1,0 +1,14 @@
+Link:
+https://www.hackerrank.com/challenges/contest-leaderboard/problem
+
+Solution:
+select hacker_id, name, sum(m) as s
+from (
+select hacker_id, name, challenge_id, max(score) as m
+from hackers
+join submissions using(hacker_id)
+group by hacker_id, name, challenge_id
+) t
+where m>0
+group by hacker_id, name
+order by s desc, hacker_id
