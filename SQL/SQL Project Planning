@@ -1,0 +1,37 @@
+Link:
+https://www.hackerrank.com/challenges/sql-projects/problem?isFullScreen=true
+
+THE SOLUTION FOR ADDDITIONAL CHALLENGE TO CREATE QUERY WITHOUT JOINS!
+UGLY ONE BUT WORKS LIKE A CHARM!
+
+Solution:
+select sd, ed
+from (
+select sd, ed, ed-sd sub
+from (
+select *, if(p='Project' and lag(p) over (order by start_date)='Project' or p='Another Project' and lag(p) over (order by start_date)='Another Project', lag(start_date) over (order by start_date), start_date) sd, if(p='Project' and lead(p) over (order by start_date)='Project' or p='Another Project' and lead(p) over (order by start_date)='Another Project', lead(end_date) over (order by start_date), end_date) ed
+from (
+select *
+from
+(
+select *, if(lag(p) over (order by start_date)!='Project' and p='Project' or p='No' or lag(p) over (order by start_date) is null and p='Project' or lag(p) over (order by start_date)!='Another Project' and p='Another Project', 'Y', 'N') yn, if(lead(p) over (order by start_date)!='Project' and p='Project' or p='No' or lead(p) over (order by start_date) is null and p='Project' or lead(p) over (order by start_date)!='Another Project' and p='Another Project', 'O', 'X') ox
+from (
+select *, if(pr='Project' and lag(pr) over (order by start_date)='Another Project' and end_date-lag(end_date) over (order by start_date)=1, 'Another Project', pr) p
+from (
+select *, if(pro='Project' and lag(pro) over (order by start_date)='Project' and end_date-lag(end_date) over (order by start_date)>1, 'Another Project', pro) pr
+from(
+select *, if(days=1 and lead(days) over (order by start_date)=1 or days=1 and lag(days) over (order by start_date)=1, 'Project', 'No') pro
+from (
+select *, if(end_date - lag(end_date) over (order by start_date) is null or lead(end_date) over (order by start_date) - end_date=1, lead(end_date) over (order by start_date) - end_date, end_date - lag(end_date) over (order by start_date)) days
+from projects
+)t
+)t1
+)t2
+)t3
+)t4
+where yn='Y' or ox = 'O'
+)t5
+)t6
+group by sd, ed
+order by sub, sd
+)t7
