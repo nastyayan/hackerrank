@@ -1,0 +1,24 @@
+Link:
+https://www.hackerrank.com/challenges/symmetric-pairs/problem
+
+Solution:
+with cte as (
+select *
+from functions
+where x in (select y from functions)
+and y in (select x from functions)
+and x!=y
+)
+
+select *
+from cte
+where x in (select y from cte)
+and y in (select x from cte)
+union all
+select *
+from functions
+where x=y
+group by x,y
+having count(x)>1 and count(y)>1
+order by x,y
+limit 8
