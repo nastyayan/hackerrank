@@ -1,0 +1,38 @@
+ORACLE
+
+Link:
+https://www.hackerrank.com/challenges/15-days-of-learning-sql/problem
+
+Solution:
+select *
+from (
+select submission_date, count(hacker_id)
+from (
+select submission_date, hacker_id
+from
+(
+select submission_date, hacker_id, name, count(submission_id) c, dense_rank() over (partition by hacker_id order by submission_date) nr, (submission_date - date '2016-03-01') +1 day
+from hackers h
+join submissions s using(hacker_id)
+group by submission_date, hacker_id, name
+order by submission_date, c desc, hacker_id
+) t
+where nr=day
+) t1
+group by submission_date
+) tab
+join (
+select submission_date, hacker_id, name
+from (
+select submission_date, hacker_id, name, c, rank() over (partition by submission_date order by c desc, hacker_id) sr
+from (
+select submission_date, hacker_id, name, count(hacker_id) c
+from hackers h
+join submissions s using(hacker_id)
+group by submission_date, hacker_id, name
+order by submission_date, c desc, hacker_id
+) t2
+) t3
+where sr=1
+) t4 using (submission_date)
+;
